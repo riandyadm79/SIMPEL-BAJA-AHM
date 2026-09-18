@@ -4074,9 +4074,50 @@
             document.getElementById('modal-user').classList.add('hidden');
             document.getElementById('form-user').reset();
         }
-        function simpanUser() {
-            alert("Fungsi pendaftaran Auth User Supabase via Edge Functions / Admin API akan diimplementasikan pada tahap integrasi backend.");
-            tutupModalUser();
+        async function simpanUser() {
+            const btn = document.getElementById('btn-simpan-user');
+            // Gunakan trim() untuk membuang spasi tidak sengaja di awal atau akhir ketikan
+            const email = document.getElementById('u-email').value.trim();
+            const nama = document.getElementById('u-nama').value.trim();
+            const dept = document.getElementById('u-dept').value;
+            const role = document.getElementById('u-role').value;
+            
+            // Password default untuk user yang dibuatkan oleh Admin
+            const defaultPassword = "pw123456";
+
+            btn.disabled = true; 
+            btn.innerHTML = `<i data-lucide="loader" class="w-4 h-4 mr-2 animate-spin"></i> Menyimpan...`;
+
+            try {
+                // 1. Mendaftarkan user ke sistem Autentikasi Supabase
+                const { data: authData, error: authErr } = await supabase.auth.signUp({ 
+                    email: email, 
+                    password: defaultPassword 
+                });
+                if(authErr) throw authErr;
+
+                // 2. Menyimpan detail identitas ke tabel 'profiles'
+                const { error: profErr } = await supabase.from('profiles').insert([{ 
+                    id: authData.user.id, 
+                    nama_lengkap: nama, 
+                    departemen: dept, 
+                    role: role 
+                }]);
+                if(profErr) throw profErr;
+
+                alert(`Pengguna berhasil ditambahkan!\n\nNama: ${nama}\nRole: ${role}\nEmail: ${email}\nPassword Default: ${defaultPassword}\n\nCatatan: Karena keamanan sesi frontend, Anda akan di-logout otomatis setelah membuat akun baru. Silakan login kembali dengan akun Admin Anda.`);
+                
+                tutupModalUser();
+                document.getElementById('form-user').reset();
+                
+                // Memaksa logout karena sesi aktif telah tertimpa oleh user baru
+                logout();
+
+            } catch (err) {
+                alert("Gagal menambahkan pengguna: " + err.message);
+                btn.disabled = false; 
+                btn.innerHTML = "Simpan User";
+            }
         }
 
         // --- START: FUNGSI FORM PR DINAMIS (4 TIPE PENGADAAN) ---
