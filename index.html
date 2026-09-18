@@ -407,7 +407,7 @@
                             </div>
                             <div>
                                 <label class="block text-xs font-bold text-slate-700 mb-1">Total Estimasi Harga (Rp) *</label>
-                                <input type="number" id="pr-estimasi" required class="w-full text-sm px-3 py-2.5 bg-white rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                                <input type="text" id="pr-estimasi" oninput="formatInputRupiah(event)" placeholder="Rp 0" required class="w-full text-sm px-3 py-2.5 bg-white rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-emerald-500 font-bold text-emerald-700">
                             </div>
                         </div>
 
@@ -715,7 +715,7 @@
                         </div>
                         <div class="md:col-span-2">
                             <label class="block text-sm font-medium text-gray-700 mb-1">Total Nilai PO / SPK (Rp) *</label>
-                            <input type="number" id="po-nilai" placeholder="Contoh: 15000000" class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:border-blue-500">
+                            <input type="text" id="po-nilai" oninput="formatInputRupiah(event)" placeholder="Contoh: Rp 15.000.000" class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:border-blue-500 font-bold text-blue-700">
                         </div>
                         <!-- Opsi Ganda di Pengadaan -->
                         <div class="md:col-span-2 bg-slate-50 p-3 rounded-lg border border-slate-200 space-y-2 mt-2">
@@ -901,7 +901,7 @@
                         </div>
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-1">Nilai Perolehan Total (Rp) *</label>
-                            <input type="number" id="stok-nilai" placeholder="Contoh: 15000000" class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-blue-500" required>
+                            <input type="text" id="stok-nilai" oninput="formatInputRupiah(event)" placeholder="Contoh: Rp 15.000.000" class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-blue-500 font-bold" required>
                         </div>
                         <div class="md:col-span-2">
                             <label class="block text-sm font-medium text-gray-700 mb-1">Lokasi Penyimpanan / Tag Aset *</label>
@@ -2483,7 +2483,7 @@
                             status: 'PO_ISSUED',
                             vendor_terpilih: vendor,
                             nomor_po: noPO,
-                            nilai_po: parseFloat(nilai),
+                            nilai_po: nilai,
                             pengadaan_id: CURRENT_USER_DATA.id 
                         })
                         .eq('id', CURRENT_PO_PR_ID);
@@ -4378,7 +4378,7 @@
                 const tipe = document.getElementById('pr-tipe').value;
                 const judul = document.getElementById('pr-judul').value;
                 const departemen = document.getElementById('pr-dept').value;
-                const estimasi = parseFloat(document.getElementById('pr-estimasi').value);
+                const estimasi = parseRupiahToNumber(document.getElementById('pr-estimasi').value);
                 const urgensi = document.getElementById('pr-urgensi').value;
                 const alasan = document.getElementById('pr-alasan').value;
                 
@@ -4643,6 +4643,30 @@
             document.getElementById('modal-approval').classList.add('hidden');
             CURRENT_REVIEW_PR_ID = null;
         };
+        // --- START: FORMATTER INPUT RUPIAH ---
+        // Fungsi untuk format Rp otomatis saat diketik
+        function formatInputRupiah(event) {
+            let value = event.target.value.replace(/[^,\d]/g, '');
+            let split = value.split(',');
+            let sisa = split[0].length % 3;
+            let rupiah = split[0].substr(0, sisa);
+            let ribuan = split[0].substr(sisa).match(/\d{3}/gi);
+
+            if (ribuan) {
+                let separator = sisa ? '.' : '';
+                rupiah += separator + ribuan.join('.');
+            }
+
+            rupiah = split[1] !== undefined ? rupiah + ',' + split[1] : rupiah;
+            event.target.value = rupiah ? 'Rp ' + rupiah : '';
+        }
+
+        // Fungsi mengembalikan string Rp ke angka murni untuk database
+        function parseRupiahToNumber(rupiahString) {
+            if (!rupiahString) return 0;
+            return parseFloat(rupiahString.replace(/[^0-9]/g, ''));
+        }
+        // --- END: FORMATTER INPUT RUPIAH ---
         // Fungsi Format Rupiah Standar Akuntansi (Rp 0.##,00)
         function formatRupiahBaku(angka) {
             if (!angka && angka !== 0) return 'Rp 0,00';
