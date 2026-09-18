@@ -48,6 +48,14 @@
         ::-webkit-scrollbar-track { background: #f1f1f1; }
         ::-webkit-scrollbar-thumb { background: #C0C0C0; border-radius: 10px; }
         ::-webkit-scrollbar-thumb:hover { background: #D4AF37; }
+    /* Animasi dan Deteksi Orientasi Layar (Portrait/Landscape) */
+        @keyframes rotate-phone { 0% { transform: rotate(0deg); } 50% { transform: rotate(-90deg); } 100% { transform: rotate(0deg); } }
+        .animate-rotate-phone { animation: rotate-phone 2.5s ease-in-out infinite; }
+        
+        /* Overlay hanya aktif di layar berukuran mobile/tablet dengan posisi berdiri (portrait) */
+        @media screen and (max-width: 820px) and (orientation: portrait) {
+            #rotate-overlay { display: flex !important; }
+        }
     </style>
 </head>
 <body class="bg-gray-50 text-gray-800 h-screen overflow-hidden font-sans flex flex-col">
@@ -4011,21 +4019,52 @@
                         // LOGIKA STEPPER TRACKING
                         // Urutan: 1. Inisiator -> 2. Checker (Atasan/Verif) -> 3. ULP/Pokja (PO) -> 4. Otorisasi RS -> 5. BAPST/PHO -> 6. SPM Keuangan
                         const st = pr.status;
-                        const s1 = 'text-emerald-600'; // Selalu aktif jika sudah masuk db
-                        const s2 = (st !== 'SUBMITTED' && st !== 'REJECTED' && st !== 'REVISION') ? 'text-emerald-600' : 'text-gray-300';
-                        const s3 = (st === 'PO_ISSUED' || st === 'GOODS_RECEIVED' || st === 'IN_WAREHOUSE' || st === 'DELIVERED' || st === 'ACCEPTED_BY_USER' || st === 'COMPLETED' || st === 'PAID') ? 'text-emerald-600' : 'text-gray-300';
-                        const s4 = s3; // Dalam alur kita, otorisasi RS terjadi sebelum PO atau saat PO terbit
-                        const s5 = (st === 'COMPLETED' || st === 'PAID') ? 'text-emerald-600' : 'text-gray-300';
-                        const s6 = (st === 'PAID') ? 'text-emerald-600' : 'text-gray-300';
+                        const activeStep = 'bg-emerald-100 text-emerald-800 border border-emerald-300 shadow-sm px-2.5 py-1.5 rounded-lg flex items-center z-10 relative shrink-0 transition-all';
+                        const inactiveStep = 'bg-slate-50 text-slate-400 border border-slate-200 px-2.5 py-1.5 rounded-lg flex items-center z-10 relative shrink-0 transition-all';
+                        const errorStep = 'bg-rose-100 text-rose-800 border border-rose-300 shadow-sm px-2.5 py-1.5 rounded-lg flex items-center z-10 relative shrink-0 transition-all';
+
+                        // Elemen Garis Penghubung (Lebar otomatis menyesuaikan sisa ruang)
+                        const lineActive = 'flex-1 h-1 bg-emerald-400 min-w-[15px] rounded-full mx-1 shadow-sm transition-all';
+                        const lineInactive = 'flex-1 h-1 bg-slate-200 min-w-[15px] rounded-full mx-1 transition-all';
+                        const lineError = 'flex-1 h-1 bg-rose-400 min-w-[15px] rounded-full mx-1 shadow-sm transition-all';
+
+                        let s1 = activeStep;
+                        let s2 = (st !== 'SUBMITTED' && st !== 'REJECTED' && st !== 'REVISION') ? activeStep : inactiveStep;
+                        let s3 = (st === 'PO_ISSUED' || st === 'GOODS_RECEIVED' || st === 'IN_WAREHOUSE' || st === 'DELIVERED' || st === 'ACCEPTED_BY_USER' || st === 'COMPLETED' || st === 'PAID') ? activeStep : inactiveStep;
+                        let s4 = s3; 
+                        let s5 = (st === 'COMPLETED' || st === 'PAID') ? activeStep : inactiveStep;
+                        let s6 = (st === 'PAID') ? activeStep : inactiveStep;
+
+                        // Perubahan warna jadi Merah jika ada masalah di tahap Checker
+                        if (st === 'REJECTED' || st === 'REVISION') {
+                            s2 = errorStep;
+                        }
+
+                        // Penentuan warna garis mengikuti kotak di depannya
+                        let l1 = (st === 'REJECTED' || st === 'REVISION') ? lineError : (s2 === activeStep ? lineActive : lineInactive);
+                        let l2 = s3 === activeStep ? lineActive : lineInactive;
+                        let l3 = s4 === activeStep ? lineActive : lineInactive;
+                        let l4 = s5 === activeStep ? lineActive : lineInactive;
+                        let l5 = s6 === activeStep ? lineActive : lineInactive;
+
+                        // Singkatkan label Step 5 agar tidak memakan ruang berlebih
+                        let labelLima = step5Label.replace('5. BAPST / GRN', '5. BAPST').replace('5. Serah Terima PHO', '5. PHO');
 
                         const stepperHTML = `
-                            <div class="flex justify-between items-center mt-4 border-t border-slate-100 pt-3 text-[10px] font-bold tracking-wide">
-                                <span class="${s1} flex items-center"><div class="w-1.5 h-1.5 rounded-full bg-current mr-1.5"></div>1. Inisiator PR</span>
-                                <span class="${s2} flex items-center"><div class="w-1.5 h-1.5 rounded-full bg-current mr-1.5"></div>2. Checker Teknis</span>
-                                <span class="${s3} flex items-center"><div class="w-1.5 h-1.5 rounded-full bg-current mr-1.5"></div>3. ULP / Pokja</span>
-                                <span class="${s4} flex items-center"><div class="w-1.5 h-1.5 rounded-full bg-current mr-1.5"></div>4. Otorisasi RS</span>
-                                <span class="${s5} flex items-center"><div class="w-1.5 h-1.5 rounded-full bg-current mr-1.5"></div>${step5Label}</span>
-                                <span class="${s6} flex items-center"><div class="w-1.5 h-1.5 rounded-full bg-current mr-1.5"></div>6. SPM Keuangan</span>
+                            <div class="mt-5 border-t border-slate-200 pt-4 w-full overflow-x-auto pb-2" style="scrollbar-width: none;">
+                                <div class="flex flex-nowrap items-center w-max min-w-full text-[10px] font-bold tracking-wide">
+                                    <span class="${s1}"><div class="w-1.5 h-1.5 rounded-full bg-current mr-1.5 animate-pulse"></div>1. Inisiator</span>
+                                    <div class="${l1}"></div>
+                                    <span class="${s2}"><div class="w-1.5 h-1.5 rounded-full bg-current mr-1.5"></div>2. Checker</span>
+                                    <div class="${l2}"></div>
+                                    <span class="${s3}"><div class="w-1.5 h-1.5 rounded-full bg-current mr-1.5"></div>3. ULP/Pokja</span>
+                                    <div class="${l3}"></div>
+                                    <span class="${s4}"><div class="w-1.5 h-1.5 rounded-full bg-current mr-1.5"></div>4. Otorisasi</span>
+                                    <div class="${l4}"></div>
+                                    <span class="${s5}"><div class="w-1.5 h-1.5 rounded-full bg-current mr-1.5"></div>${labelLima}</span>
+                                    <div class="${l5}"></div>
+                                    <span class="${s6}"><div class="w-1.5 h-1.5 rounded-full bg-current mr-1.5"></div>6. Keuangan</span>
+                                </div>
                             </div>
                         `;
 
