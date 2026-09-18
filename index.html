@@ -38,6 +38,11 @@
             #area-cetak-bast, #area-cetak-generator { position: absolute; left: 0; top: 0; width: 100%; margin: 0; padding: 20px; }
             .no-print { display: none !important; }
         }
+        /* Animasi Running Text Lambat & Berjarak */
+        .marquee-container { overflow: hidden; white-space: nowrap; width: 100%; box-sizing: border-box; }
+        .marquee-content { display: inline-block; padding-left: 100%; animation: marquee 45s linear infinite; }
+        .marquee-content span { margin-right: 100vw; } /* Jarak antar pengulangan sangat jauh */
+        @keyframes marquee { 0% { transform: translate(0, 0); } 100% { transform: translate(-100%, 0); } }
         /* Custom Scrollbar Elegan */
         ::-webkit-scrollbar { width: 6px; height: 6px; }
         ::-webkit-scrollbar-track { background: #f1f1f1; }
@@ -45,19 +50,95 @@
         ::-webkit-scrollbar-thumb:hover { background: #D4AF37; }
     </style>
 </head>
-<body class="bg-gray-50 text-gray-800 h-screen overflow-hidden font-sans relative">
+<body class="bg-gray-50 text-gray-800 h-screen overflow-hidden font-sans flex flex-col">
 
     <script src="env.js"></script>
+    <!-- START: GLOBAL RUNNING TEXT -->
+    <div class="bg-dark text-secondary text-sm font-bold border-b-2 border-secondary marquee-container py-2 no-print flex-none z-[100] shadow-md">
+        <div class="marquee-content tracking-widest uppercase"><span id="global-running-text">Memuat informasi...</span></div>
+    </div>
+    <!-- END: GLOBAL RUNNING TEXT -->
 
+    <!-- START: LANDING PAGE -->
+    <div id="landing-container" class="flex-1 overflow-y-auto bg-gray-50 flex flex-col relative z-40">
+        <!-- Navbar Landing -->
+        <header class="bg-white border-b border-silver shadow-sm px-6 py-4 flex justify-between items-center sticky top-0 z-50">
+            <div class="flex items-center">
+                <img src="LOGO%20ATMA.png" alt="Logo" class="h-10 w-10 mr-3">
+                <div>
+                    <h1 class="font-extrabold text-dark text-lg md:text-xl tracking-tight leading-tight">SIMPEL <span class="text-primary">BAJA</span></h1>
+                    <p class="text-[10px] text-gray-500 font-medium">E-Procurement RSJD Atma Husada Mahakam</p>
+                </div>
+            </div>
+            <button onclick="tampilkanLayar('login')" class="bg-primary hover:bg-emerald-700 text-white font-bold py-2 px-6 rounded-full shadow-md transition-colors text-sm flex items-center">
+                <i data-lucide="log-in" class="w-4 h-4 mr-2"></i> MASUK SISTEM
+            </button>
+        </header>
+
+        <main class="flex-1">
+            <!-- Hero Section -->
+            <section class="relative bg-dark text-white py-20 px-6 overflow-hidden">
+                <div class="absolute inset-0 opacity-20 bg-[url('https://www.transparenttextures.com/patterns/stardust.png')]"></div>
+                <div class="absolute top-0 right-0 w-96 h-96 bg-primary rounded-full filter blur-[100px] opacity-20 transform translate-x-1/2 -translate-y-1/2"></div>
+                
+                <div class="max-w-6xl mx-auto relative z-10 grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+                    <div>
+                        <span class="text-secondary font-bold tracking-widest text-xs mb-2 block uppercase"><i data-lucide="shield-check" class="inline w-4 h-4 mb-0.5"></i> Transparan & Akuntabel</span>
+                        <h2 class="text-4xl md:text-5xl font-black mb-6 leading-tight">Tata Kelola <span class="text-transparent bg-clip-text bg-gradient-to-r from-primary to-emerald-300">Pengadaan</span> yang Unggul</h2>
+                        <p class="text-silver mb-8 leading-relaxed">Sistem Informasi Terintegrasi Pengelolaan Barang & Jasa (SIMPEL BAJA). Mendukung 4 pilar pengadaan dengan prinsip *Segregation of Duties* dan Audit Trail SHA-256.</p>
+                    </div>
+                    
+                    <!-- Infografis Statistik -->
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div class="bg-gray-800/80 backdrop-blur border border-gray-700 p-6 rounded-2xl shadow-xl text-center hover:border-secondary transition-colors">
+                            <i data-lucide="wallet" class="w-8 h-8 mx-auto text-secondary mb-3"></i>
+                            <h3 class="text-3xl font-black text-white" id="stat-anggaran">-</h3>
+                            <p class="text-xs text-silver mt-1 uppercase tracking-wider">Realisasi Anggaran</p>
+                        </div>
+                        <div class="bg-gray-800/80 backdrop-blur border border-gray-700 p-6 rounded-2xl shadow-xl text-center hover:border-primary transition-colors">
+                            <i data-lucide="package-check" class="w-8 h-8 mx-auto text-primary mb-3"></i>
+                            <h3 class="text-3xl font-black text-white" id="stat-paket">-</h3>
+                            <p class="text-xs text-silver mt-1 uppercase tracking-wider">Paket Selesai</p>
+                        </div>
+                        <div class="bg-gray-800/80 backdrop-blur border border-gray-700 p-6 rounded-2xl shadow-xl text-center hover:border-primary transition-colors sm:col-span-2">
+                            <i data-lucide="building-2" class="w-8 h-8 mx-auto text-primary mb-3"></i>
+                            <h3 class="text-3xl font-black text-white" id="stat-vendor">-</h3>
+                            <p class="text-xs text-silver mt-1 uppercase tracking-wider">Mitra Rekanan Terverifikasi</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Publikasi & Edukasi Section -->
+            <section class="py-16 px-6 bg-white">
+                <div class="max-w-6xl mx-auto">
+                    <div class="text-center mb-12">
+                        <h2 class="text-3xl font-bold text-dark"><span class="text-primary border-b-4 border-secondary pb-1">Publikasi</span> & Edukasi</h2>
+                        <p class="text-sm text-gray-500 mt-4">Informasi pengumuman tender, berita pengadaan, dan materi edukasi terkini.</p>
+                    </div>
+                    
+                    <div id="landing-publikasi-grid" class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <!-- Kartu akan dirender JS -->
+                        <div class="col-span-3 text-center text-gray-400 py-10 animate-pulse">Menarik data dari database...</div>
+                    </div>
+                </div>
+            </section>
+        </main>
+        
+        <footer class="bg-dark py-6 text-center border-t border-gray-800">
+            <p class="text-xs text-silver">© 2026 RSJD Atma Husada Mahakam. Didesain dan dikembangkan oleh Riandy, S.Kep.</p>
+        </footer>
+    </div>
+    <!-- END: LANDING PAGE -->
     <!-- START: HALAMAN LOGIN (TEMA PREMIUM) -->
-    <div id="login-container" class="absolute inset-0 z-50 flex items-center justify-center bg-dark">
+    <div id="login-container" class="relative flex-1 z-50 flex items-center justify-center bg-dark">
         <!-- Aksen Pattern Elegan di Background -->
         <div class="absolute inset-0 opacity-10 bg-[url('https://www.transparenttextures.com/patterns/stardust.png')]"></div>
         
         <div class="bg-white p-8 rounded-xl shadow-2xl w-full max-w-md relative z-10 border-t-4 border-secondary">
             <div class="text-center mb-6">
-                <div class="inline-flex items-center justify-center w-14 h-14 bg-emerald-50 rounded-full mb-4 border border-secondary shadow-sm">
-                    <i data-lucide="shield-check" class="w-7 h-7 text-primary"></i>
+                <div class="mb-4 flex justify-center">
+                    <img src="LOGO%20ATMA.png" alt="Logo RSJD Atma Husada Mahakam" class="h-20 w-auto drop-shadow-md">
                 </div>
                 <h2 class="text-2xl font-extrabold text-dark tracking-tight">SIMPEL BAJA</h2>
                 <p class="text-gray-500 text-sm mt-1">Sistem Pengelolaan Pengadaan RSJD Atma Husada Mahakam</p>
@@ -141,12 +222,12 @@
     </div>
     <!-- END: MODAL UBAH PASSWORD -->
 
-    <div id="app-container" class="w-full h-full flex hidden">
+    <div id="app-container" class="w-full flex-1 flex hidden overflow-hidden">
 
     <!-- START: SIDEBAR NAVIGASI (TEMA GELAP PREMIUM) -->
     <aside class="w-64 bg-dark border-r border-gray-800 shadow-xl flex flex-col hidden md:flex text-silver">
         <div class="h-16 flex items-center px-6 border-b border-gray-800 bg-gray-900">
-            <i data-lucide="diamond" class="text-secondary mr-2 w-6 h-6"></i>
+            <img src="LOGO%20ATMA.png" alt="Logo" class="h-8 w-8 mr-3 drop-shadow-md">
             <span class="font-extrabold text-lg tracking-wider text-white">SIMPEL <span class="text-primary">BAJA</span></span>
         </div>
         
@@ -1494,7 +1575,7 @@
                         </table>
                     </div>
                     <div class="mt-6 flex justify-end">
-                        <button onclick="alert('Konfigurasi RACI berhasil diperbarui di sistem!')" class="bg-red-600 hover:bg-red-700 text-white text-sm font-bold py-2.5 px-6 rounded-lg shadow transition-colors flex items-center"><i data-lucide="save" class="w-4 h-4 mr-2"></i> Simpan Konfigurasi ACL</button>
+                        <button id="btn-simpan-rbac" onclick="simpanKonfigurasiACL()" class="bg-red-600 hover:bg-red-700 text-white text-sm font-bold py-2.5 px-6 rounded-lg shadow transition-colors flex items-center"><i data-lucide="save" class="w-4 h-4 mr-2"></i> Simpan Konfigurasi ACL</button>
                     </div>
                 </div>
             </div>
@@ -1553,6 +1634,92 @@
             </div>
             <!-- END: HALAMAN BUKU SOP DIGITAL -->
 
+            <!-- START: HALAMAN KELOLA PUBLIKASI -->
+            <div id="page-publikasi" style="display: none;" class="pb-10">
+                <div class="bg-white rounded-xl border border-gray-100 shadow-sm p-6 max-w-5xl mx-auto">
+                    <div class="flex justify-between items-center mb-6 border-b pb-4">
+                        <div>
+                            <h2 class="text-xl font-bold text-gray-800">Manajemen Publikasi & Edukasi</h2>
+                            <p class="text-sm text-gray-500">Posting konten yang akan tampil di Landing Page Publik.</p>
+                        </div>
+                        <button onclick="bukaModalPublikasi()" class="bg-primary hover:bg-emerald-700 text-white px-4 py-2 rounded-lg text-sm font-bold shadow transition"><i data-lucide="plus" class="inline w-4 h-4 mr-1"></i> Buat Post Baru</button>
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-sm text-left border-collapse">
+                            <thead class="text-xs text-gray-700 uppercase bg-gray-50 border-y">
+                                <tr>
+                                    <th class="px-4 py-3">Kategori</th>
+                                    <th class="px-4 py-3">Judul Konten</th>
+                                    <th class="px-4 py-3">Tanggal</th>
+                                    <th class="px-4 py-3 text-center">Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tabel-kelola-publikasi" class="divide-y divide-gray-100"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Modal Publikasi -->
+            <div id="modal-publikasi" class="hidden fixed inset-0 z-50 bg-black bg-opacity-50 flex items-center justify-center p-4">
+                <div class="bg-white p-6 rounded-xl shadow-lg w-full max-w-2xl">
+                    <h3 class="text-lg font-bold text-gray-800 mb-4 border-b pb-2">Buat / Edit Publikasi</h3>
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block text-xs font-bold text-gray-700 mb-1">Kategori</label>
+                            <select id="pub-kategori" class="w-full border rounded p-2 text-sm"><option value="EDUKASI">Edukasi</option><option value="BERITA">Berita</option><option value="PENGUMUMAN">Pengumuman</option></select>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-gray-700 mb-1">Judul Post</label>
+                            <input type="text" id="pub-judul" class="w-full border rounded p-2 text-sm">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-gray-700 mb-1">Isi Konten</label>
+                            <textarea id="pub-konten" rows="4" class="w-full border rounded p-2 text-sm"></textarea>
+                        </div>
+                    </div>
+                    <div class="flex justify-end gap-3 border-t pt-4 mt-6">
+                        <button onclick="document.getElementById('modal-publikasi').classList.add('hidden')" class="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg text-sm font-bold">Batal</button>
+                        <button onclick="simpanPublikasi()" class="px-4 py-2 bg-primary text-white rounded-lg text-sm font-bold">Simpan Publikasi</button>
+                    </div>
+                </div>
+            </div>
+            <!-- END: HALAMAN KELOLA PUBLIKASI -->
+
+            <!-- START: HALAMAN PENGATURAN WEB -->
+            <div id="page-pengaturan" style="display: none;" class="pb-10">
+                <div class="bg-white rounded-xl border border-gray-100 shadow-sm p-6 max-w-3xl mx-auto border-t-4 border-secondary">
+                    <h2 class="text-xl font-bold text-dark mb-6"><i data-lucide="settings" class="inline w-5 h-5 mr-2"></i>Pengaturan Landing Page</h2>
+                    
+                    <div class="space-y-6">
+                        <div class="bg-gray-50 p-4 border rounded-lg">
+                            <label class="block text-sm font-bold text-emerald-800 mb-2"><i data-lucide="monitor-play" class="inline w-4 h-4 mr-1"></i> Running Text (Teks Berjalan)</label>
+                            <textarea id="set-running-text" rows="2" class="w-full border rounded-lg p-3 text-sm focus:border-primary outline-none" placeholder="Teks yang berjalan di bagian paling atas web..."></textarea>
+                        </div>
+                        
+                        <div class="bg-gray-50 p-4 border rounded-lg grid grid-cols-1 md:grid-cols-3 gap-4">
+                            <div class="md:col-span-3 mb-2 border-b pb-2"><strong class="text-sm text-emerald-800"><i data-lucide="bar-chart" class="inline w-4 h-4 mr-1"></i> Angka Infografis Statistik</strong></div>
+                            <div>
+                                <label class="block text-xs font-bold text-gray-600 mb-1">Anggaran</label>
+                                <input type="text" id="set-anggaran" class="w-full border rounded p-2 text-sm" placeholder="Contoh: 15.5 Miliar">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold text-gray-600 mb-1">Paket Selesai</label>
+                                <input type="text" id="set-paket" class="w-full border rounded p-2 text-sm">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold text-gray-600 mb-1">Mitra Rekanan</label>
+                                <input type="text" id="set-vendor" class="w-full border rounded p-2 text-sm">
+                            </div>
+                        </div>
+                        
+                        <div class="flex justify-end pt-4">
+                            <button onclick="simpanPengaturanWeb()" class="px-6 py-2.5 bg-secondary hover:bg-yellow-600 text-dark font-bold rounded-lg shadow"><i data-lucide="save" class="inline w-4 h-4 mr-2"></i> Simpan Pengaturan</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- END: HALAMAN PENGATURAN WEB -->
             <!-- START: HALAMAN GENERATOR DOKUMEN RESMI -->
             <div id="page-generator" style="display: none;" class="pb-10">
                 <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6 max-w-5xl mx-auto mb-6 no-print">
@@ -1614,7 +1781,7 @@
         // Konfigurasi hak akses berdasarkan image_b9dbcb.png
         // --- START: MATRIKS PEMISAHAN FUNGSI & RACI ---
         // Mengacu pada referensi RACI: R/A (Eksekusi), C (Review/Catatan), I (Notifikasi/View)
-        const ROLE_MATRIX = {
+        let ROLE_MATRIX = {
             "Unit Pengusul": { 
                 menus: ['dashboard', 'buat-usulan', 'terima-barang-akhir', 'bast'], 
                 actions: ['R_INPUT_USULAN', 'R_REQ_PENYERAHAN', 'R_KONFIRMASI_PENERIMAAN', 'R_BAST'],
@@ -1694,7 +1861,9 @@
             'laporan': { id: 'laporan', icon: 'bar-chart-3', text: 'Rekap Laporan' },
             'audit': { id: 'audit', icon: 'history', text: 'Audit Trail' },
             'manajemen-user': { id: 'manajemen-user', icon: 'users-cog', text: 'Manajemen Pengguna' },
-            'rbac-editor': { id: 'rbac-editor', icon: 'shield-alert', text: 'RBAC Editor' }
+            'rbac-editor': { id: 'rbac-editor', icon: 'shield-alert', text: 'RBAC Editor' },
+            'kelola-publikasi': { id: 'publikasi', icon: 'newspaper', text: 'Publikasi & Edukasi' },
+            'pengaturan-web': { id: 'pengaturan', icon: 'monitor-play', text: 'Pengaturan Landing' }
         };
 
         // Variabel global untuk menyimpan data user asli dari database
@@ -1703,20 +1872,35 @@
 
         // Cek Sesi Sesi Supabase saat halaman dimuat
         async function checkSession() {
+            // 1. Tarik Konfigurasi RBAC Dinamis Terlebih Dahulu
+            try {
+                const { data: dbSet } = await supabase.from('pengaturan_web').select('rbac_matrix').eq('id', 1).single();
+                if (dbSet && dbSet.rbac_matrix) {
+                    // Jika ada data di DB, timpa matriks default
+                    ROLE_MATRIX = dbSet.rbac_matrix;
+                }
+            } catch (e) { console.error("Gagal memuat RBAC Kustom", e); }
+
+            // 2. Lanjut ke proses Autentikasi Normal
             const { data: { session }, error } = await supabase.auth.getSession();
             if (session) {
                 await loadUserProfile(session.user.id, session.user.email);
             } else {
-                tampilkanLayar('login'); // Jika tidak ada sesi, paksa ke login
+                tampilkanLayar('landing'); 
             }
         }
 
         function tampilkanLayar(layar) {
-            if (layar === 'login') {
+            document.getElementById('landing-container').classList.add('hidden');
+            document.getElementById('login-container').classList.add('hidden');
+            document.getElementById('app-container').classList.add('hidden');
+
+            if (layar === 'landing') {
+                document.getElementById('landing-container').classList.remove('hidden');
+                muatDataLandingPage(); // Tarik data publik
+            } else if (layar === 'login') {
                 document.getElementById('login-container').classList.remove('hidden');
-                document.getElementById('app-container').classList.add('hidden');
-            } else {
-                document.getElementById('login-container').classList.add('hidden');
+            } else if (layar === 'app') {
                 document.getElementById('app-container').classList.remove('hidden');
             }
         }
@@ -1789,7 +1973,7 @@
             const menuContainer = document.getElementById('sidebar-menu');
             menuContainer.innerHTML = '';
             
-            tampilkanLayar('login');
+            tampilkanLayar('landing'); // Kembali ke Wajah Depan setelah logout
         }
 
         // --- FUNGSI UBAH PASSWORD ---
@@ -3910,6 +4094,12 @@
                 if (!userMenus.includes('rbac-editor')) userMenus.push('rbac-editor');
             }
 
+            // --- TAMBAHKAN BLOK INI: Beri akses Landing Page CMS ke Admin & Super Admin ---
+            if (CURRENT_USER_ROLE === 'Super Admin' || CURRENT_USER_ROLE === 'Admin') {
+                if (!userMenus.includes('kelola-publikasi')) userMenus.push('kelola-publikasi');
+                if (!userMenus.includes('pengaturan-web')) userMenus.push('pengaturan-web');
+            }
+
             userMenus.forEach(menuKey => {
                 if(MASTER_MENUS[menuKey]) {
                     const menu = MASTER_MENUS[menuKey];
@@ -4058,6 +4248,16 @@
                 document.getElementById('page-title').innerText = "Print Center Dokumen";
                 document.getElementById('page-generator').style.display = 'block';
                 if (typeof muatDaftarGenerator === "function") muatDaftarGenerator();
+            }
+            else if(pageId === 'publikasi') {
+                document.getElementById('page-title').innerText = "Manajemen Publikasi";
+                document.getElementById('page-publikasi').style.display = 'block';
+                muatTabelPublikasi();
+            }
+            else if(pageId === 'pengaturan') {
+                document.getElementById('page-title').innerText = "Pengaturan Web";
+                document.getElementById('page-pengaturan').style.display = 'block';
+                muatFormPengaturan();
             }
             else {
                 document.getElementById('page-title').innerText = "Sedang Dibangun";
@@ -4554,6 +4754,53 @@
                 return null;
             }
         }
+        
+        async function simpanKonfigurasiACL() {
+            if(!confirm("Menerapkan konfigurasi Hak Akses ini ke seluruh sistem akan langsung mengubah menu pengguna lain. Lanjutkan?")) return;
+            
+            const btn = document.getElementById('btn-simpan-rbac');
+            const originalText = btn.innerHTML;
+            btn.innerHTML = `<i data-lucide="loader" class="w-4 h-4 mr-2 animate-spin"></i> Menyimpan...`;
+            btn.disabled = true;
+
+            try {
+                let newMatrix = {};
+                const roles = ['Unit Pengusul', 'Kepala Bidang', 'Wakil Direktur', 'Verifikator', 'Pengadaan', 'Penerima', 'Gudang', 'Penyerahan', 'Keuangan', 'Admin'];
+                
+                // Susun kerangka JSON
+                roles.forEach(r => {
+                    newMatrix[r] = { menus: [], actions: [], views: [] };
+                    if(ROLE_MATRIX[r] && ROLE_MATRIX[r].views) newMatrix[r].views = ROLE_MATRIX[r].views; // Pertahankan view lama
+                });
+                newMatrix['Super Admin'] = ROLE_MATRIX['Super Admin']; // Super admin utuh
+
+                // Baca HTML Checkbox
+                document.querySelectorAll('.rbac-checkbox').forEach(chk => {
+                    if(chk.checked || chk.disabled) {
+                        const r = chk.getAttribute('data-role');
+                        const t = chk.getAttribute('data-type');
+                        const v = chk.getAttribute('data-val');
+                        if(t === 'menu') newMatrix[r].menus.push(v);
+                        if(t === 'action') newMatrix[r].actions.push(v);
+                    }
+                });
+
+                // Kirim JSON Matrix ke Supabase
+                const { error } = await supabase.from('pengaturan_web').update({ rbac_matrix: newMatrix }).eq('id', 1);
+                if(error) throw error;
+
+                ROLE_MATRIX = newMatrix;
+                renderMenuBasedOnRole(); // Segarkan menu navigasi admin
+                alert("Konfigurasi RBAC berhasil disimpan! Hak akses telah diperbarui.");
+            } catch(e) {
+                alert("Gagal menyimpan konfigurasi: " + e.message);
+            } finally {
+                btn.innerHTML = originalText;
+                btn.disabled = false;
+                lucide.createIcons();
+            }
+        }
+        // --- END: MODUL RBAC EDITOR ---
         // --- START: MODUL RBAC EDITOR (SUPER ADMIN) ---
         function muatRBACEditor() {
             const roles = ['Unit Pengusul', 'Kepala Bidang', 'Wakil Direktur', 'Verifikator', 'Pengadaan', 'Penerima', 'Gudang', 'Penyerahan', 'Keuangan', 'Admin'];
@@ -4561,104 +4808,216 @@
             const thead = document.getElementById('thead-rbac-roles');
             if(!tbody || !thead) return;
             
-            // 1. Render Table Header (Role)
             let thHTML = '<th class="p-3 border-r border-silver text-left bg-gray-100 min-w-[200px] sticky left-0 z-10">Nama Modul / Hak Akses</th>';
-            roles.forEach(r => {
-                thHTML += `<th class="p-3 border-r border-silver bg-gray-100 whitespace-nowrap">${r}</th>`;
-            });
+            roles.forEach(r => { thHTML += `<th class="p-3 border-r border-silver bg-gray-100 whitespace-nowrap">${r}</th>`; });
             thead.innerHTML = `<tr>${thHTML}</tr>`;
             tbody.innerHTML = '';
             
-            // 2. Render Kategori 1: AKSES MENU (UI Navigation)
+            // Kategori 1: AKSES MENU
             tbody.innerHTML += `<tr><td colspan="${roles.length + 1}" class="p-2 bg-gray-200 font-extrabold text-left text-emerald-700 tracking-widest text-[10px] uppercase">Akses Menu Navigasi (Views)</td></tr>`;
-            
             Object.keys(MASTER_MENUS).forEach(menuKey => {
                 const menu = MASTER_MENUS[menuKey];
                 let trHTML = `<td class="p-2 text-left border-r border-silver font-medium text-gray-800 sticky left-0 bg-white z-10 shadow-[1px_0_0_0_#e5e7eb]"><i data-lucide="${menu.icon}" class="w-4 h-4 inline mr-2 text-gray-400"></i> ${menu.text}</td>`;
                 
                 roles.forEach(role => {
-                    let isChecked = false;
-                    if (ROLE_MATRIX[role]?.menus?.includes(menuKey)) isChecked = true;
-                    if (['raci-matrix', 'laporan', 'audit', 'sop', 'generator'].includes(menuKey)) isChecked = true; 
-                    if (menuKey === 'usulan-saya' && role === 'Unit Pengusul') isChecked = true;
-                    if ((menuKey === 'rbac-editor' || menuKey === 'manajemen-user') && role === 'Admin') isChecked = true;
-
-                    trHTML += `<td class="p-2 border-r border-gray-100 text-center hover:bg-gray-50"><input type="checkbox" ${isChecked ? 'checked' : ''} class="accent-primary w-4 h-4 cursor-pointer"></td>`;
+                    let isChecked = ROLE_MATRIX[role]?.menus?.includes(menuKey);
+                    // Menu Global yang tidak bisa dimatikan
+                    const isGlobal = ['raci-matrix', 'laporan', 'audit', 'sop', 'generator'].includes(menuKey);
+                    
+                    trHTML += `<td class="p-2 border-r border-gray-100 text-center hover:bg-gray-50"><input type="checkbox" data-role="${role}" data-type="menu" data-val="${menuKey}" ${isChecked || isGlobal ? 'checked' : ''} ${isGlobal ? 'disabled' : ''} class="rbac-checkbox accent-primary w-4 h-4 cursor-pointer"></td>`;
                 });
                 tbody.innerHTML += `<tr class="border-b border-gray-200">${trHTML}</tr>`;
             });
 
-            // 3. Render Kategori 2: HAK EKSEKUSI (Actions)
+            // Kategori 2: HAK EKSEKUSI
             tbody.innerHTML += `<tr><td colspan="${roles.length + 1}" class="p-2 bg-gray-200 font-extrabold text-left text-red-600 tracking-widest text-[10px] uppercase mt-4">Hak Eksekusi Data (Actions)</td></tr>`;
             
             let allActions = new Set();
+            const defaultActions = ['R_INPUT_USULAN', 'R_REQ_PENYERAHAN', 'R_KONFIRMASI_PENERIMAAN', 'R_BAST', 'A_REVIEW_USULAN_LVL1', 'A_REVIEW_USULAN_LVL2', 'R_VERIFIKASI_KEBUTUHAN', 'R_VERIFIKASI_ANGGARAN', 'R_PERSETUJUAN_PENGADAAN', 'R_PROSES_PENGADAAN', 'A_PROSES_PENGADAAN', 'R_PENERIMAAN_BARANG', 'R_PEMERIKSAAN_BARANG', 'R_PENCATATAN_GUDANG', 'R_PENYERAHAN', 'R_PEMBAYARAN', 'MANAGE_USERS', 'MANAGE_MASTER_DATA'];
+            defaultActions.forEach(a => allActions.add(a));
             Object.values(ROLE_MATRIX).forEach(rm => rm.actions?.forEach(a => allActions.add(a)));
             
             Array.from(allActions).sort().forEach(action => {
                 let trHTML = `<td class="p-2 text-left border-r border-silver font-bold text-gray-600 font-mono text-[10px] sticky left-0 bg-white z-10 shadow-[1px_0_0_0_#e5e7eb]"><i data-lucide="zap" class="w-3 h-3 inline mr-2 text-red-400"></i> ${action}</td>`;
                 roles.forEach(role => {
                     let isChecked = ROLE_MATRIX[role]?.actions?.includes(action) ? 'checked' : '';
-                    trHTML += `<td class="p-2 border-r border-gray-100 text-center hover:bg-red-50 transition-colors"><input type="checkbox" ${isChecked} class="accent-red-600 w-4 h-4 cursor-pointer"></td>`;
+                    trHTML += `<td class="p-2 border-r border-gray-100 text-center hover:bg-red-50 transition-colors"><input type="checkbox" data-role="${role}" data-type="action" data-val="${action}" ${isChecked} class="rbac-checkbox accent-red-600 w-4 h-4 cursor-pointer"></td>`;
                 });
                 tbody.innerHTML += `<tr class="border-b border-gray-200">${trHTML}</tr>`;
             });
             lucide.createIcons();
         }
-        // --- END: MODUL RBAC EDITOR ---
-        // --- START: MODUL RBAC EDITOR (SUPER ADMIN) ---
-        function muatRBACEditor() {
-            // Daftar Role sesuai Matriks (Super Admin tidak dimasukkan karena dia bisa akses segalanya)
-            const roles = ['Unit Pengusul', 'Kepala Bidang', 'Wakil Direktur', 'Verifikator', 'Pengadaan', 'Penerima', 'Gudang', 'Penyerahan', 'Keuangan', 'Admin'];
-            const tbody = document.getElementById('tbody-rbac');
-            const thead = document.getElementById('thead-rbac-roles');
-            if(!tbody || !thead) return;
+
+        async function simpanKonfigurasiACL() {
+            if(!confirm("Menerapkan konfigurasi Hak Akses ini ke seluruh sistem akan langsung mengubah menu pengguna lain. Lanjutkan?")) return;
             
-            // 1. Render Table Header (Role)
-            let thHTML = '<th class="p-3 border-r border-silver text-left bg-gray-100 min-w-[200px] sticky left-0 z-10">Nama Modul / Hak Akses</th>';
-            roles.forEach(r => {
-                thHTML += `<th class="p-3 border-r border-silver bg-gray-100 whitespace-nowrap">${r}</th>`;
-            });
-            thead.innerHTML = `<tr>${thHTML}</tr>`;
-            tbody.innerHTML = '';
-            
-            // 2. Render Kategori 1: AKSES MENU (UI Navigation)
-            tbody.innerHTML += `<tr><td colspan="${roles.length + 1}" class="p-2 bg-gray-200 font-extrabold text-left text-emerald-700 tracking-widest text-[10px] uppercase">Akses Menu Navigasi (Views)</td></tr>`;
-            
-            Object.keys(MASTER_MENUS).forEach(menuKey => {
-                const menu = MASTER_MENUS[menuKey];
-                let trHTML = `<td class="p-2 text-left border-r border-silver font-medium text-gray-800 sticky left-0 bg-white z-10 shadow-[1px_0_0_0_#e5e7eb]"><i data-lucide="${menu.icon}" class="w-4 h-4 inline mr-2 text-gray-400"></i> ${menu.text}</td>`;
+            const btn = document.getElementById('btn-simpan-rbac');
+            const originalText = btn.innerHTML;
+            btn.innerHTML = `<i data-lucide="loader" class="w-4 h-4 mr-2 animate-spin"></i> Menyimpan...`;
+            btn.disabled = true;
+
+            try {
+                let newMatrix = {};
+                const roles = ['Unit Pengusul', 'Kepala Bidang', 'Wakil Direktur', 'Verifikator', 'Pengadaan', 'Penerima', 'Gudang', 'Penyerahan', 'Keuangan', 'Admin'];
                 
-                roles.forEach(role => {
-                    let isChecked = false;
-                    // Auto-Check berdasarkan Matriks Default
-                    if (ROLE_MATRIX[role]?.menus?.includes(menuKey)) isChecked = true;
-                    if (['raci-matrix', 'laporan', 'audit', 'sop', 'generator'].includes(menuKey)) isChecked = true; 
-                    if (menuKey === 'usulan-saya' && role === 'Unit Pengusul') isChecked = true;
-                    if ((menuKey === 'rbac-editor' || menuKey === 'manajemen-user') && role === 'Admin') isChecked = true;
-
-                    trHTML += `<td class="p-2 border-r border-gray-100 text-center hover:bg-gray-50"><input type="checkbox" ${isChecked ? 'checked' : ''} class="accent-primary w-4 h-4 cursor-pointer"></td>`;
+                // Susun kerangka JSON
+                roles.forEach(r => {
+                    newMatrix[r] = { menus: [], actions: [], views: [] };
+                    if(ROLE_MATRIX[r] && ROLE_MATRIX[r].views) newMatrix[r].views = ROLE_MATRIX[r].views; // Pertahankan view lama
                 });
-                tbody.innerHTML += `<tr class="border-b border-gray-200">${trHTML}</tr>`;
-            });
+                newMatrix['Super Admin'] = ROLE_MATRIX['Super Admin']; // Super admin utuh
 
-            // 3. Render Kategori 2: HAK EKSEKUSI (Actions)
-            tbody.innerHTML += `<tr><td colspan="${roles.length + 1}" class="p-2 bg-gray-200 font-extrabold text-left text-red-600 tracking-widest text-[10px] uppercase mt-4">Hak Eksekusi Data (Actions)</td></tr>`;
-            
-            // Ambil semua daftar action secara dinamis dari Matriks
-            let allActions = new Set();
-            Object.values(ROLE_MATRIX).forEach(rm => rm.actions?.forEach(a => allActions.add(a)));
-            
-            Array.from(allActions).sort().forEach(action => {
-                let trHTML = `<td class="p-2 text-left border-r border-silver font-bold text-gray-600 font-mono text-[10px] sticky left-0 bg-white z-10 shadow-[1px_0_0_0_#e5e7eb]"><i data-lucide="zap" class="w-3 h-3 inline mr-2 text-red-400"></i> ${action}</td>`;
-                roles.forEach(role => {
-                    let isChecked = ROLE_MATRIX[role]?.actions?.includes(action) ? 'checked' : '';
-                    trHTML += `<td class="p-2 border-r border-gray-100 text-center hover:bg-red-50 transition-colors"><input type="checkbox" ${isChecked} class="accent-red-600 w-4 h-4 cursor-pointer"></td>`;
+                // Baca HTML Checkbox
+                document.querySelectorAll('.rbac-checkbox').forEach(chk => {
+                    if(chk.checked || chk.disabled) {
+                        const r = chk.getAttribute('data-role');
+                        const t = chk.getAttribute('data-type');
+                        const v = chk.getAttribute('data-val');
+                        if(t === 'menu') newMatrix[r].menus.push(v);
+                        if(t === 'action') newMatrix[r].actions.push(v);
+                    }
                 });
-                tbody.innerHTML += `<tr class="border-b border-gray-200">${trHTML}</tr>`;
-            });
-            lucide.createIcons();
+
+                // Kirim JSON Matrix ke Supabase
+                const { error } = await supabase.from('pengaturan_web').update({ rbac_matrix: newMatrix }).eq('id', 1);
+                if(error) throw error;
+
+                ROLE_MATRIX = newMatrix;
+                renderMenuBasedOnRole(); // Segarkan menu navigasi admin
+                alert("Konfigurasi RBAC berhasil disimpan! Hak akses telah diperbarui.");
+            } catch(e) {
+                alert("Gagal menyimpan konfigurasi: " + e.message);
+            } finally {
+                btn.innerHTML = originalText;
+                btn.disabled = false;
+                lucide.createIcons();
+            }
         }
         // --- END: MODUL RBAC EDITOR ---
+        // --- START: MODUL LANDING PAGE & PENGATURAN ---
+        async function muatDataLandingPage() {
+            try {
+                // Tarik Pengaturan (Stats & Running Text)
+                const { data: set } = await supabase.from('pengaturan_web').select('*').eq('id', 1).single();
+                if (set) {
+                    document.getElementById('global-running-text').innerText = set.running_text || '';
+                    document.getElementById('stat-anggaran').innerText = set.stat_anggaran || '-';
+                    document.getElementById('stat-paket').innerText = set.stat_paket || '-';
+                    document.getElementById('stat-vendor').innerText = set.stat_vendor || '-';
+                }
+
+                // Tarik Publikasi Terakhir
+                const { data: pubs } = await supabase.from('publikasi').select('*').order('tanggal', {ascending: false}).limit(3);
+                const grid = document.getElementById('landing-publikasi-grid');
+                grid.innerHTML = '';
+                
+                if (!pubs || pubs.length === 0) {
+                    grid.innerHTML = '<div class="col-span-3 text-center text-gray-500 py-10">Belum ada publikasi saat ini.</div>';
+                    return;
+                }
+
+                pubs.forEach(p => {
+                    const warnaKategori = p.kategori === 'EDUKASI' ? 'bg-primary' : (p.kategori === 'BERITA' ? 'bg-blue-600' : 'bg-secondary text-dark');
+                    const textWarna = p.kategori === 'PENGUMUMAN' ? 'text-dark' : 'text-white';
+                    
+                    grid.innerHTML += `
+                        <div class="bg-white border border-gray-200 rounded-2xl shadow-sm hover:shadow-xl transition-shadow overflow-hidden flex flex-col">
+                            <div class="${warnaKategori} ${textWarna} py-1.5 px-4 text-[10px] font-bold tracking-widest uppercase">${p.kategori}</div>
+                            <div class="p-6 flex-1 flex flex-col">
+                                <span class="text-xs text-gray-400 mb-2 block"><i data-lucide="calendar" class="inline w-3 h-3 mr-1"></i> ${new Date(p.tanggal).toLocaleDateString('id-ID')}</span>
+                                <h3 class="text-lg font-bold text-dark mb-3 leading-tight">${p.judul}</h3>
+                                <p class="text-sm text-gray-600 line-clamp-3 mb-4">${p.konten}</p>
+                                <div class="mt-auto pt-4 border-t border-gray-100">
+                                    <button class="text-primary font-bold text-sm hover:underline flex items-center">Baca Selengkapnya <i data-lucide="chevron-right" class="w-4 h-4 ml-1"></i></button>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                });
+                lucide.createIcons();
+            } catch(e) { console.error("Gagal muat landing:", e); }
+        }
+
+        // Fungsi CMS Admin
+        async function muatTabelPublikasi() {
+            const { data } = await supabase.from('publikasi').select('*').order('tanggal', {ascending: false});
+            const tbody = document.getElementById('tabel-kelola-publikasi');
+            tbody.innerHTML = '';
+            if(data) {
+                data.forEach(p => {
+                    tbody.innerHTML += `
+                        <tr class="border-b">
+                            <td class="p-3 font-bold">${p.kategori}</td>
+                            <td class="p-3">${p.judul}</td>
+                            <td class="p-3 text-xs">${new Date(p.tanggal).toLocaleDateString('id-ID')}</td>
+                            <td class="p-3 text-center"><button onclick="hapusPublikasi('${p.id}')" class="text-red-500 text-xs font-bold hover:underline">Hapus</button></td>
+                        </tr>
+                    `;
+                });
+            }
+        }
+
+        function bukaModalPublikasi() {
+            document.getElementById('pub-judul').value = '';
+            document.getElementById('pub-konten').value = '';
+            document.getElementById('modal-publikasi').classList.remove('hidden');
+        }
+
+        async function simpanPublikasi() {
+            const kat = document.getElementById('pub-kategori').value;
+            const jud = document.getElementById('pub-judul').value;
+            const kon = document.getElementById('pub-konten').value;
+            if(!jud || !kon) return alert('Judul dan Konten wajib diisi!');
+            
+            await supabase.from('publikasi').insert([{ kategori: kat, judul: jud, konten: kon }]);
+            document.getElementById('modal-publikasi').classList.add('hidden');
+            muatTabelPublikasi();
+            alert("Publikasi berhasil diterbitkan di Landing Page!");
+        }
+
+        async function hapusPublikasi(id) {
+            if(confirm("Hapus publikasi ini?")) {
+                await supabase.from('publikasi').delete().eq('id', id);
+                muatTabelPublikasi();
+            }
+        }
+
+        async function muatFormPengaturan() {
+            const { data } = await supabase.from('pengaturan_web').select('*').eq('id', 1).single();
+            if (data) {
+                document.getElementById('set-running-text').value = data.running_text || '';
+                document.getElementById('set-anggaran').value = data.stat_anggaran || '';
+                document.getElementById('set-paket').value = data.stat_paket || '';
+                document.getElementById('set-vendor').value = data.stat_vendor || '';
+            }
+        }
+
+        async function simpanPengaturanWeb() {
+            const rt = document.getElementById('set-running-text').value;
+            const sa = document.getElementById('set-anggaran').value;
+            const sp = document.getElementById('set-paket').value;
+            const sv = document.getElementById('set-vendor').value;
+            
+            try {
+                // 1. Simpan ke database
+                const { error } = await supabase.from('pengaturan_web').update({
+                    running_text: rt, stat_anggaran: sa, stat_paket: sp, stat_vendor: sv
+                }).eq('id', 1);
+                
+                if (error) throw error;
+                
+                // 2. Langsung ubah teks yang berjalan di layar detik ini juga (Tanpa Refresh)
+                const runningTextBawah = document.getElementById('global-running-text');
+                if (runningTextBawah) {
+                    runningTextBawah.innerText = rt;
+                }
+                
+                alert("Pengaturan Landing Page berhasil disimpan!");
+            } catch (err) {
+                alert("Gagal menyimpan pengaturan: " + err.message + "\n\n(Pastikan RLS tabel 'pengaturan_web' sudah di-disable atau diizinkan untuk update).");
+            }
+        }
+        // --- END: MODUL LANDING PAGE ---
         // --- START: FUNGSI TUTUP MODAL SAAT KLIK DI LUAR (OUTSIDE CLICK) ---
         window.addEventListener('click', function(event) {
             // Mengecek apakah elemen yang diklik adalah background overlay gelap 
@@ -4688,6 +5047,14 @@
             }
         });
         // --- END: FUNGSI TUTUP MODAL SAAT KLIK DI LUAR ---
+    // Fungsi inisialisasi Global Running Text agar ditarik seketika web dibuka
+        async function initGlobalRunningText() {
+            try {
+                const { data } = await supabase.from('pengaturan_web').select('running_text').eq('id', 1).single();
+                if (data) document.getElementById('global-running-text').innerText = data.running_text || '';
+            } catch(e) { console.error("Gagal muat global running text", e); }
+        }
+        initGlobalRunningText();    
     </script>
 </body>
 </html>
